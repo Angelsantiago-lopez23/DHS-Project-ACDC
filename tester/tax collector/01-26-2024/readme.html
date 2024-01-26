@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Property Tax Web Scraping Script README</title>
+    <link rel="stylesheet" href="readme.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Property Tax Web Scraping Script README</h1>
+
+        <h2>Overview</h2>
+        <p>This script automates the task of extracting detailed information about property taxes from a specific website. It utilizes the names provided in an Excel file to search for corresponding account, owner, and address details, which are then compiled into another Excel file.</p>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>Python 3.x installed.</li>
+            <li>Google Chrome Browser.</li>
+            <li>Internet connection.</li>
+        </ul>
+
+        <h2>Installation</h2>
+        <ol>
+            <li><strong>Python Libraries</strong>: Install the required Python libraries by running:
+                <code>pip install selenium pandas webdriver-manager</code>
+            </li>
+            <li><strong>Chrome WebDriver</strong>: The script uses ChromeDriver, which is automatically managed by <code>webdriver-manager</code>.</li>
+        </ol>
+
+        <h2>Input File Preparation</h2>
+        <p>- The input must be an Excel file named <code>input.xlsx</code>.</p>
+        <p>- Ensure it has a column with the header <code>name</code>.</p>
+
+        <h2>Execution Steps</h2>
+        <ol>
+            <li>Place the <code>input.xlsx</code> file in the same directory as the script.</li>
+            <li>Run the script: <code>python &lt;script_name&gt;.py</code><br>
+                Replace <code>&lt;script_name&gt;</code> with the actual file name of the Python script.
+            </li>
+        </ol>
+
+        <h2>Post-execution</h2>
+        <p>- Upon completion, the script generates a file named <code>results.xlsx</code> in the same directory, containing the extracted data.</p>
+
+        <h2>Troubleshooting</h2>
+        <ul>
+            <li><strong>Script not starting</strong>: Check if all prerequisites are met.</li>
+            <li><strong>Browser issues</strong>: Ensure the latest version of Chrome is installed.</li>
+            <li><strong>Excel file errors</strong>: Verify the format of <code>input.xlsx</code> as mentioned in the guidelines.</li>
+        </ul>
+
+        <h2>Notes for Testers</h2>
+        <ul>
+            <li>Conduct tests with various names to ensure the script's robustness.</li>
+            <li>Monitor the performance and log any issues encountered.</li>
+            <li>Verify the accuracy and completeness of data in the output file.</li>
+        </ul>
+    </div>
+</body>
+</html>
