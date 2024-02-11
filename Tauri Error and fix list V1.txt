@@ -1,0 +1,24 @@
+Tauri Error and fix list V0
+
+Error one: Error folder name not listed in members list
+
+Fix: Must add folder name housing the HTML file to cargo.tml under the users name to members list array
+
+Error two: Make a unique Identifier
+
+Fix: Must change identifier in tauri.conf JSON file under src-tauri folder to be unique only alphabateical. or - allowed in the identifier.
+
+Error three: image wont print in tauri but will in webpage
+
+Fix: convert the file to a .svg using online converter (note an .svg cannot have any spaces between words)
+
+Error four: div elements move when page is expanded/minimized
+
+use % instead of the fixed values of px
+
+Error five: combine a dropdown box and a checkbox using Javascript
+
+
+
+Error six: combine enter key and next page key
+
