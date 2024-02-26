@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<! task list>
+
+<! resize image and put in the center of the screen then move up a bit use protoyupe as example>
+
+<! add box for user to type in no password stuff yet maybe later>
+
+<! figure out how to allow the user to transition between HTML pages>
+
+<! make the next page where the user can  type a name>
+
+<! can edit width and height of div to>
+
+<! can be left or right dosent matter in div same for top and bottom>
+
+<! refer to html forms to figure out how to send data to a location when Enter>
+
+<! replace next page with upload excel >
+<html lang="en">
+
+
+<style>
+
+	div.dropdown {
+
+  		position: relative;
+		border: 2px solid black;
+  		display: inline-block;
+
+	}
+
+	div.dropdown_content {
+
+ 		display: none;
+  		position: absolute;
+  		background-color: white;
+ 		min-width: 369px;
+  		padding: 12px 16px;
+
+	}
+
+	.dropdown:hover .dropdown_content {
+
+ 		 display: block;
+
+	}
+
+	div.DHS_logo {
+
+		position: relative;
+		top: 60px;
+		text-align: center;
+						
+
+	}
+
+	div.header {
+
+		
+		position: relative;
+		top: 70px; 	
+		text-align: center;
+
+	}
+
+	div.input {
+
+		position: relative;
+		top: 100px; 
+		text-align: center;
+	}
+
+body {
+
+ 	background-color: blue;
+	
+	
+
+}
+
+</style>
+
+<head> <! may need to add some stuff from head of og index>
+	
+</head>
+
+
+  <body>
+
+
+	<div class = "DHS_logo">
+
+		 <img class = "DHS_logo" src="/assets/DNSlogo.svg" alt = 		         "logo of DHS" style = 	"Width:260px;Height:240px;">
+
+	</div>
+    
+	<font size = "5">
+	<div class = "header">
+
+		<b> Now please select a county or counties to conduct the search in by mousing 		over the box below. </b>
+
+	</div>
+	<font>
+	
+	<div class = "input">
+	<form>		
+	<div class="dropdown">
+
+  	<span>Mouse over to select a county or counties</span>
+
+  	<div class="dropdown_content">
+
+  		<input type="checkbox" id="c1" name="c1" value="Bike">
+  		<label for="vehicle1"> Lee County </label><br>
+  		<input type="checkbox" id="c2" name="c2" value="Car">
+  		<label for="vehicle2"> Collier County </label><br>
+ 		 <input type="checkbox" id="c3" name="c3" value="Boat">
+  		<label for="vehicle3"> Sarasota County </label>
+	
+		</form>
+
+	
+	</div> <! div class end dropdown content end>
+
+	
+
+
+ 	</div> <! div class dropdown end>
+
+	<form>
+		<input type = "submit" value = "Enter">
+		<a href = "indexp3.html">Next Page</a>
+
+	</form>
+
+</div> <! div class input end>
+
+  </body>
+
+</html>
