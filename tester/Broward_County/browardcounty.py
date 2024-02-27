@@ -133,7 +133,7 @@ def main():
         data_to_excel(all_data, f"{target_name.replace(' ', '')}_output.xlsx")
         break
 
-    #target_name = input("Enter the name to search(First Name Last Name): ")
+    #target_name = input("Enter the name to search(Last Name, First Name): ")
     #driver = driver_initalization()
     #website_target(driver, 'https://web.bcpa.net/BcpaClient/#/Record-Search')
     #searchbox_person(driver, target_name)
