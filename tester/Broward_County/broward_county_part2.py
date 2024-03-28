@@ -4,6 +4,7 @@ Input: Person of Interest
 Output: Person Information --> Searched Name, Party Type, Related Name, Record Date, etc.
 
 NOTE: Prereq: pip install -r requirements.txt
+      Have a input.xlsx file/excel with the 'Name' column. Then target names under that columns for the scripts to read all names
 """
 
 # Libraries Needed 
@@ -38,9 +39,10 @@ def validate_userinput(target_name):
     Using the re: regular expression import. 
     """
     pattern = r'^[a-zA-Z\s]+$'
-    if re.match(pattern, target_name):
+    if isinstance(target_name, str) and re.match(pattern, target_name):
         return True
-    return False
+    else:
+        return False
 
 def validate_searchresults(driver):
     """
@@ -135,20 +137,30 @@ def main():
     Main loop where we utilize all functions to do the webscrapping on the website with the targeted user. 
     """
     while True:
-        target_name = input("Enter the name to search(Last Name, First Name): ")
-        if not validate_userinput(target_name):
-            print("Invalid Input...Please enter only alphabetical characters/spaces!")
+        try:
+            file_path = './input.xlsx'
+            file = pd.read_excel(file_path)
+            names = file['Name'].tolist()
+        except Exception as e:
+            print(f"Error reading the input Excel file: {e}")
             continue
-        driver = driver_initalization()
-        website_target(driver, 'https://officialrecords.broward.org/AcclaimWeb/search/Disclaimer?st=/AcclaimWeb/search/SearchTypeName')
-        conditions_then_searchboxperson(driver, target_name)
-        if not validate_searchresults(driver):
-            print("No search results found for the targeted name! Please try again!")
+        # Getting it from a list of names to a loop for each name
+        for target_name in names:
+            if not validate_userinput(target_name):
+                print(f"Invalid Input: {target_name}... Please ensure names contain only alphabetical characters and spaces!")
+                continue
+            driver = driver_initalization()
+            website_target(driver, 'https://officialrecords.broward.org/AcclaimWeb/search/Disclaimer?st=/AcclaimWeb/search/SearchTypeName')
+            conditions_then_searchboxperson(driver, target_name)
+            if not validate_searchresults(driver):
+                print(f"No search results found for the name: {target_name}! Moving to the next name...")
+                continue
+
+            all_data = multiple_pages(driver)
             driver.quit()
-            continue
-        all_data = multiple_pages(driver)
-        driver.quit()
-        data_to_excel(all_data, f"{target_name.replace(' ', '')}_output.xlsx")
+            data_to_excel(all_data, f"{target_name.replace(' ','')}_output.xlsx")
+
+        print("Processing completed for all names in the input file.")
         break
 
 if __name__ == "__main__":
