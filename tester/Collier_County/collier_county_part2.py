@@ -214,8 +214,6 @@ def data_to_excel(data, output_file):
             df.drop('Number', axis=1)
             df.map(replace_empty_with_null)
             df.to_excel(output_file, index=False)
-            # Optionally, you can assign column names based on the data structure
-            # df.columns = ['Column1', 'Column2', ...]
             print("Data has been written to:", output_file)
     else:
         print("No data to write.")
