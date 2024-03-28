@@ -4,6 +4,7 @@ Input: Person of interest
 Output: Person information --> Folio Number, Owner Name, Street Address --> EXCEL
 
 NOTE: Prereq: pip install -r requirements.txt
+      Have input.xlsx file/excel with column name 'Name'
 """
 
 # Libraries Needed 
@@ -37,9 +38,10 @@ def validate_userinput(target_name):
     Using re search pattern.
     """
     pattern = r'^[a-zA-Z\s]+$'
-    if re.match(pattern, target_name):
+    if isinstance(target_name, str) and re.match(pattern, target_name):
         return True
-    return False
+    else:
+        return False
 
 def validate_searchresults(driver):
     """
@@ -47,6 +49,7 @@ def validate_searchresults(driver):
     """
     try: 
         driver.find_element(By.XPATH, '//*[@id="tbl-list-parcels"]')
+        time.sleep(5)
         return True
     except NoSuchElementException:
         return False
@@ -81,14 +84,20 @@ def extract_data(driver):
 
 def multiple_pages(driver):
     """
-    We know target user will have one page or more of results. In a while loop we compare each page data with each other. If a page of results is similar to 
-    the previous page then we know that is the last page of results. 
-        - NOTE: I tried pagnation but that didn't work and the page numbers but it rose errors so I took this approach. 
-    After the last page we return all the data from all pages. 
+    Navigate through multiple pages of search results and extract data.
     """
     all_data = []
     prev_data = None
     while True:
+        try:
+            # Check if "No records found" element exists
+            no_records_element = driver.find_element(By.ID, 'noRecordFound')
+            if no_records_element.is_displayed():
+                print("No records found for this name.")
+                break  # Exit the loop if no records found
+        except NoSuchElementException:
+            pass
+
         try:
             data = extract_data(driver)
             if data == prev_data:
@@ -100,7 +109,9 @@ def multiple_pages(driver):
             time.sleep(10)  # Adjust sleep time as needed
         except (NoSuchElementException, TimeoutException):
             break
+
     return all_data
+
 
 def data_to_excel(data, output_file):
     """
@@ -116,30 +127,33 @@ def main():
     Main loop where user is asked the targeted name and from there the sequence of function executes/webscrapper. 
     """
     while True:
-        target_name = input("Enter the name to search(First Name Last Name): ")
-        if not validate_userinput(target_name):
-            print("Invalid Input...Please enter only alphabetical characters/spaces!")
+        try:
+            file_path = './input.xlsx'
+            file = pd.read_excel(file_path)
+            names = file['Name'].tolist()
+        except Exception as e:
+            print(f"Error reading the input Excel file: {e}")
             continue
-        driver = driver_initalization()
-        website_target(driver, 'https://web.bcpa.net/BcpaClient/#/Record-Search')
-        searchbox_person(driver, target_name)
 
-        if not validate_searchresults(driver):
-            print("No search result found for the targeted name! Please try again!")
+        for target_name in names:
+            if not validate_userinput(target_name):
+                print(f"Invalid Input: {target_name}... Please ensure names contain only alphabetical characters and spaces!")
+                continue
+            driver = driver_initalization()
+            website_target(driver, 'https://web.bcpa.net/BcpaClient/#/Record-Search')
+            searchbox_person(driver, target_name)
+            if not validate_searchresults(driver):
+                print(f"No search results found for the name: {target_name}! Moving to the next name...")
+                driver.quit()
+                continue
+            all_data = multiple_pages(driver)
             driver.quit()
-            continue
-        all_data = multiple_pages(driver)
-        driver.quit()
-        data_to_excel(all_data, f"{target_name.replace(' ', '')}_output.xlsx")
+            if all_data:
+                data_to_excel(all_data, f"{target_name.replace(' ', '')}_output.xlsx")
+        
+        print("Processing completed for all names in the input file.")
         break
 
-    #target_name = input("Enter the name to search(Last Name, First Name): ")
-    #driver = driver_initalization()
-    #website_target(driver, 'https://web.bcpa.net/BcpaClient/#/Record-Search')
-    #searchbox_person(driver, target_name)
-    #all_data = multiple_pages(driver)
-    #driver.quit()
-    #data_to_excel(all_data, f"{target_name.replace(' ', '')}_output.xlsx")
 
 
 if __name__ == "__main__":
