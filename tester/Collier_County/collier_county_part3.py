@@ -73,7 +73,10 @@ def searchbox_person(driver, name):
           So using the Business Name text box element.
     """
     # Wait for the dropdown button to be clickable
-    dropdown_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".e-input-group-icon.e-ddl-icon.e-icons.e-ddl-disable-icon")))
+    # XPath expression to select the first element with the specified class name. Due to mix up with a different element.
+    dropdown_button_xpath = "(//span[@class='e-input-group-icon e-ddl-icon e-icons e-ddl-disable-icon'])[1]"
+
+    dropdown_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, dropdown_button_xpath)))
     time.sleep(3)
     dropdown_button.click() # Click the dropdown button
     time.sleep(3)
@@ -84,13 +87,10 @@ def searchbox_person(driver, name):
     desired_option = dropdown_options.find_element(By.XPATH, f"//li[contains(text(), '{name1}')]")
     desired_option.click()
     time.sleep(10)
-    # After selecting the Basic Propert checkbox we go to the input element and send the name. 
-    input_element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "BusinessCORPubBlazor.ViewModels.PartyGroup0")))
-    try:
-        input_element.click()
-        time.sleep(5)
-    except:
-        pass
+    # After selecting the Basic Property checkbox we go to the input element and send the name.
+    # Find the input element to input the name
+    input_element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='BusinessCORPubBlazor.ViewModels.PartyGroup0']")))
+    input_element.clear()  # Clear any existing text
     input_element.send_keys(name + Keys.ENTER)
     time.sleep(15) # NOTE: Anything below 10 seconds results in not loading the data after 10. Due to large amount of data for 'basic property'
 
