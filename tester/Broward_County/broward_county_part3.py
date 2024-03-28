@@ -6,6 +6,7 @@ Output: Person Information --> Account, Owner, Address, Billing Names & Address
 *** During user input, a space after the full name leads to different results(shorter in the case of: "Smith John " ***
 *** Used Lee: Tax Collector for guide since both website were created by the same group so outline almost identical***
 NOTE: Prereq: pip install -r requirements.txt
+     Have a input.xlsx file/excel with a 'Name' column. Then target names under that column.
 """
 
 # Libraries Needed 
@@ -41,9 +42,10 @@ def validate_user_input(target_name):
     Using the re: regular expression import. 
     """
     pattern = r'^[a-zA-Z\s]+$'
-    if re.match(pattern, target_name):
+    if isinstance(target_name, str) and re.match(pattern, target_name):
         return True
-    return False
+    else:
+        return False
 
 def validate_search_results(driver, wait_time=60):
     """
@@ -193,21 +195,31 @@ def main():
     
     """
     while True: 
-        target_name = input("Format: 'Last Name, First Name'\nEnter the name to search: ")
-        if not validate_user_input(target_name):
-            print("Invalid Input...Please enter only alphabetical characters/spaces!")
+        try:
+            file_path = './input.xlsx'
+            file = pd.read_excel(file_path)
+            names = file['Name'].tolist()
+        except Exception as e:
+            print(f"Error reading the input Excel file: {e}")
             continue
-        driver = driver_initialization()
-        website_target(driver, 'https://broward.county-taxes.com/public/search/property_tax')
-        searchbox_person(driver, target_name)
-        if not validate_search_results(driver):
-            print("No search results found for the targeted name! Please try again!")
+
+        for target_name in names: 
+            if not validate_user_input(target_name):
+                print("Invalid Input...Please enter only alphabetical characters/spaces!")
+                continue
+            driver = driver_initialization()
+            website_target(driver, 'https://broward.county-taxes.com/public/search/property_tax')
+            searchbox_person(driver, target_name)
+            if not validate_search_results(driver):
+                print("No search results found for the targeted name! Please try again!")
+                driver.quit()
+                continue
+            current_page_number = 1
+            all_data = multiple_pages(driver, current_page_number)
             driver.quit()
-            continue
-        current_page_number = 1
-        all_data = multiple_pages(driver, current_page_number)
-        driver.quit()
-        data_to_excel(all_data, f"{target_name.replace(' ', '')}_output.xlsx")
+            data_to_excel(all_data, f"{target_name.replace(' ', '')}_output.xlsx")
+
+        print("Processing completed for all names in the input file.")
         break
 
 if __name__ == "__main__":
