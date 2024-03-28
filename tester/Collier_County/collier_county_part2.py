@@ -47,36 +47,33 @@ def validate_user_input(target_name):
     
 def validate_search_results(driver):
     """
-    Error Handling: Checks if the user results exists or not. If so then continue if not then return False. 
-                    We will be checking 2 result table. Since a different element appears if only one result was found. 
-                    Which is a summary of that data but if more than one result it will result in a result table.                  
+    Error Handling: Checks if the user results exist or not. If so then continue if not then return False. 
+                    We will be checking 2 different result table. Since a different element appears if only one result was found. 
+                    Which is a summary of that data but if more than one result it will result in a result table.    
+                    Now if we dont find either. It will display 'no parcel found' which appears as a pop up alert.               
     """
     try:
         single_result = driver.find_element(By.CLASS_NAME, 'ui-jqgrid-btable')
         result_table = driver.find_element(By.ID, 'PropSum')
-        if single_result or result_table:
+        if single_result:
+            time.sleep(5)
+            return True
+        elif result_table:
+            time.sleep(5)
             return True
         else:
-            pass
+            return False
     except NoSuchElementException:
-        try:
-            alert = driver.switch_to.alert
-            alert_text = alert.text
-            print(f"Alert Text: {alert_text}")
-            alert.dismiss()  # Dismiss the alert
-        except NoAlertPresentException:
-            pass  # If no alert is present, just continue
-        except UnexpectedAlertPresentException:
-            pass  # If the alert is unexpected, just continue
+        print("No search results found.")
         return False
-    except UnexpectedAlertPresentException as e:
-        print(f"Unexpected alert present: {e}")
-        driver.quit()
+    except (UnexpectedAlertPresentException, NoAlertPresentException) as e:
+        print("An unexpected alert occurred: No Parcels Found")
+        #print(e) # Uncomment to see what error exactly occured.
         return False
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        driver.quit()
-        return False
+
+
+
+       
     
 def searchbox_person(driver, name):
     """
@@ -159,19 +156,17 @@ def extract_data(driver):
                 # Store data in the list
                 data_list.extend(row_data)
         data_dict = {data_list[i]: data_list[i+1] for i in range(0, len(data_list), 2)}
-        df = pd.DataFrame(data_dict.items(), columns=['Name', 'Value'])  
-        output_file = "property_data.xlsx"
+        df = pd.DataFrame(data_dict.items(), columns=['Name', 'Value'])
+        output_file = "collier_propertyappraiser_singleresult_data.xlsx"
         df.to_excel(output_file, index=False)
-
-
-        driver.quit()
+        print("Data has been written to:", output_file)
         """
-        for table in prop_summary.find_elements(By.XPATH, ".//table"):
-            for tr in table.find_elements(By.XPATH, ".//tr"):
-                row_data = [td.text.strip() for td in tr.find_elements(By.XPATH, ".//td")]
-                data.extend(row_data) # if issue change back to extend
-        #return data_list """
-    #return data
+         Had issues with datatoexcel for this result table when using the function below. Couldn't distinguish
+        between the 2 since it yield different results. So I decided to do it here since its just one result/no more pages. 
+        And since the result is not displayed corretly in a mess so it decided to put in columns of name and value. And convert to excel and quit driver. 
+        """
+        driver.quit()
+        
 
 
 def multiple_pages(driver):
@@ -216,6 +211,8 @@ def data_to_excel(data, output_file):
             # Example: Create DataFrame with no specified column names
             df = pd.DataFrame(data)
             df = pd.DataFrame(data, columns = ['Number','Parcel No.', 'UC.', 'Owner Name', 'No.', 'Street', 'S/C No.', 'Bk/Bd', 'L/Unt', 'Sold', 'Sale Amt', 'Market'])
+            df.drop('Number', axis=1)
+            df.map(replace_empty_with_null)
             df.to_excel(output_file, index=False)
             # Optionally, you can assign column names based on the data structure
             # df.columns = ['Column1', 'Column2', ...]
@@ -245,7 +242,7 @@ def main():
             searchbox_person(driver, target_name)
             if validate_search_results(driver):
                 print(f"No search results found for the name: {target_name}! Moving to the next name...")
-                
+                driver.quit()
                 continue
         
             all_data = multiple_pages(driver)
