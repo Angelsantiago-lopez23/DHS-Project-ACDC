@@ -1,0 +1,5 @@
+State of files for Collier county
+
+Tax collector and Clerk are functional and integrated into the program.
+
+Property appraiser was not made as we didn't have time for it.
