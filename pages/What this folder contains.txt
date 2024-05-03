@@ -1,0 +1,7 @@
+What this Folder contains
+
+This folder contains the front end of the program each folder describes what section of the front end it holds. However I will list the more unclear ones below
+
+BatchUpload: Uploads data from search and an Excel
+
+Python: runs the python scripts of the backend
