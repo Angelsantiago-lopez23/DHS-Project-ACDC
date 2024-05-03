@@ -1,9 +1,0 @@
-Tauri Error and fix list V0
-
-Error one: Error folder name not listed in members list
-
-Must add folder name housing the HTML file to cargo.tml under the users name to members list array
-
-Error two: Make a unique Identifier
-
-Must change identifier in tauri.conf JSON file under src-tauri folder to be unique only alphabateical. or - allowed in the identifier.
