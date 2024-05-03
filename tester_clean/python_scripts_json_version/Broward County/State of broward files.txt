@@ -1,0 +1,5 @@
+Broward_property_apprasier.py is functional but not integrated into the program
+
+Clerk_browardv2.py file.txt is nonfunctional and may be better to start from scratch
+
+Tax_collector_broward.py file.txt is nonfunctional and may be better to start from scratch
