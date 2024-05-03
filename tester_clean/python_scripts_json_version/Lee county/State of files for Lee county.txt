@@ -1,0 +1,5 @@
+State of files for Lee county
+
+All functional and integrated into the program
+
+You will find these same files in the tester folder I'm not sure why they where out there and couldn't get an answer why so I didn't move them the accompanying files in tester don't seem to be related but again I wasn't sure didn't work on this part.
